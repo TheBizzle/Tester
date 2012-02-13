@@ -1,4 +1,4 @@
-package tester.test.dummies
+package tester.dummies
 
 import tester.testanalyzer.ExecutionStatus
 

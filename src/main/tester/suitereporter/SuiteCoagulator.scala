@@ -1,4 +1,4 @@
-package tester.test.suitereporter
+package tester.suitereporter
 
 import org.scalatest.Suite
 

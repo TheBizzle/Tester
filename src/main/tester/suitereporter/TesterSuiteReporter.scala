@@ -1,6 +1,6 @@
-package tester.test.suitereporter
+package tester.suitereporter
 
-import tester.test.{TesterFunSuite, TesterSpec}
+import tester.{TesterFunSuite, TesterSpec}
 
 
 /**

@@ -1,10 +1,9 @@
-package tester.test
+package tester
 
 import dummies.DummyTestCluster
 import org.scalatest.{FlatSpec, GivenWhenThen}
 import tester.criteria._
 import tester.exceptions._
-import tester.TestingCore
 import tester.testcluster.Testable
 
 /**

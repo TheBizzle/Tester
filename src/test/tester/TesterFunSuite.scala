@@ -1,8 +1,7 @@
-package tester.test
+package tester
 
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
-import tester.TestingCore
 import collection.immutable.HashMap
 import tester.criteria._
 

@@ -1,10 +1,9 @@
-package tester.test.dummies
+package tester.dummies
 
 import java.lang.reflect.Field
 import tester.testcluster.{TestSubject, Testable, TestCluster}
 import tester.testcluster.testfunction.{TestFuncConstructionBundle, TestFunction}
 import tester.testanalyzer.{TestAnalysisResultBundle, ExecutionStatus, TestAnalysisFlagBundle}
-
 
 /**
  * Created by IntelliJ IDEA.
