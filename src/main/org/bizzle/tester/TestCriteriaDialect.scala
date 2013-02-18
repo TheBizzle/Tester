@@ -1,7 +1,7 @@
-package tester
+package org.bizzle.tester
 
 import
-  tester.criteria._
+  org.bizzle.tester.criteria._
 
 /**
  * Created by IntelliJ IDEA.

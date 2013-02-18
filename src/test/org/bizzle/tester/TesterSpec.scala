@@ -1,4 +1,4 @@
-package tester
+package org.bizzle.tester
 
 import
   org.scalatest.{ FlatSpec, GivenWhenThen }

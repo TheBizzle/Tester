@@ -1,4 +1,4 @@
-package tester
+package org.bizzle.tester
 
 import
   scala.util.matching.Regex

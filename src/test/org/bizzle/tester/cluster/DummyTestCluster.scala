@@ -1,4 +1,4 @@
-package tester.cluster
+package org.bizzle.tester.cluster
 
 import
   java.lang.reflect.Field

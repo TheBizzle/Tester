@@ -1,4 +1,4 @@
-package tester
+package org.bizzle.tester
 
 /**
  * Created by IntelliJ IDEA.

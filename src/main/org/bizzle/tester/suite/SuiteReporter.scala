@@ -1,4 +1,4 @@
-package tester.suite
+package org.bizzle.tester.suite
 
 import
   org.scalatest.Suite

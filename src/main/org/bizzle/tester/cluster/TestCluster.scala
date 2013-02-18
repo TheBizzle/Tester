@@ -1,4 +1,4 @@
-package tester.cluster
+package org.bizzle.tester.cluster
 
 /**
  * Created by IntelliJ IDEA.

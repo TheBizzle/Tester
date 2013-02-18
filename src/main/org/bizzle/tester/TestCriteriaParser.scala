@@ -1,10 +1,10 @@
-package tester
+package org.bizzle.tester
 
 import
   util.parsing.combinator.RegexParsers
 
 import
-  tester.criteria._
+  org.bizzle.tester.criteria._
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +20,7 @@ object TestCriteriaParser extends RegexParsers {
   // ============== MISC ====================
 
   val flags     = TestingFlag.flags
-  val flagNames = flags.map(_.getClass.getName.replaceAll("""(\$$)|(.*\.)""", ""))  // (i.e. "tester.criteria.RunTest$" => "RunTest")
+  val flagNames = flags.map(_.getClass.getName.replaceAll("""(\$$)|(.*\.)""", ""))  // (i.e. "org.bizzle.tester.criteria.RunTest$" => "RunTest")
 
   implicit private def not2Flag(not: Option[String]) : TestRunningnessFlag = not map (x => SkipTest) getOrElse (RunTest)
 

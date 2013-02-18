@@ -1,7 +1,7 @@
-package tester.cluster
+package org.bizzle.tester.cluster
 
 import
-  tester.criteria.{ ToggleFlagManager, Talkative, TestToggleFlag }
+  org.bizzle.tester.criteria.{ ToggleFlagManager, Talkative, TestToggleFlag }
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,4 +1,4 @@
-package tester
+package org.bizzle.tester
 
 import
   scala.annotation.tailrec
@@ -60,6 +60,7 @@ object Tester {
       val testFlagBundle = new TestFuncFlagBundle(testToggles)
       val testsToRun     = handleTestIntervals(values, ranges, cluster.size)
 
+      //@ Passing around this cluster is nasty.  Passing its size above seems largely useless, too.  Maybe just pass in a function that converts `Seq[Int] => Seq[TestFunction]`?
       runTests(cluster.getTestsToRun(testsToRun), testable, testFlagBundle, isStacktracing)
 
     }

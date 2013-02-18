@@ -1,4 +1,4 @@
-package tester.criteria
+package org.bizzle.tester.criteria
 
 /**
  * Created by IntelliJ IDEA.
