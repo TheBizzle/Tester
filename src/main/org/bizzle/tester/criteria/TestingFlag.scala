@@ -9,7 +9,7 @@ package org.bizzle.tester.criteria
 
 sealed trait TestingFlag
 object TestingFlag {
-  val flags = Set[TestToggleFlag](Talkative, RunBaseTests, SkipExternalTests, StackTrace)
+  val flags = Set[TestToggleFlag](Talkative, StackTrace)
 }
 
 
@@ -19,8 +19,6 @@ sealed trait TestToggleFlag extends TestingFlag {
 }
 
 case object Talkative         extends TestToggleFlag  // Enables the "Here, let me draw that for you on the map!" thing in PathFindingCore tests; overall, gives tests permission to println
-case object RunBaseTests      extends TestToggleFlag  // Enables running the ScalaTest tests on the core data structures and such
-case object SkipExternalTests extends TestToggleFlag  // Skips the running of any of the actual external (e.g. pathfinding) tests
 case object StackTrace        extends TestToggleFlag  // Signifies the desire to see stacktraces when tests fail as a result of throwing exceptions
 
 

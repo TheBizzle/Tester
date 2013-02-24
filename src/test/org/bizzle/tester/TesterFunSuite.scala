@@ -48,41 +48,6 @@ class TesterFunSuite extends FunSuite with ShouldMatchers {
     result should equal (expecteds)
   }
 
-  test("assessPathingDesire - Empty map") {
-    val bundle = CriteriaBundle()
-    val result = Tester.assessExternalityDesire(bundle)
-    result should equal (false)
-  }
-
-  test("assessPathingDesire - Map without values/ranges") {
-    val bundle = CriteriaBundle(Seq(SkipExternalTests))
-    val result = Tester.assessExternalityDesire(bundle)
-    result should equal (false)
-  }
-
-  test("assessPathingDesire - Map without ranges") {
-    val bundle = CriteriaBundle(Seq(SkipExternalTests),
-                                Seq(TestRunningnessValue(1, RunTest)))
-    val result = Tester.assessExternalityDesire(bundle)
-    result should equal (true)
-  }
-
-  test("assessPathingDesire - Map without values") {
-    val bundle = CriteriaBundle(Seq(SkipExternalTests),
-                                Seq(),
-                                Seq(TestRunningnessRange(1, 1, RunTest)))
-    val result = Tester.assessExternalityDesire(bundle)
-    result should equal (true)
-  }
-
-  test("assessPathingDesire - Mixed map") {
-    val bundle = CriteriaBundle(Seq(),
-                                Seq(TestRunningnessValue(3, RunTest)),
-                                Seq(TestRunningnessRange(1, 1, RunTest), TestRunningnessRange(2, 2, RunTest)))
-    val result = Tester.assessExternalityDesire(bundle)
-    result should equal (true)
-  }
-
   test("handleRanges - Empty") {
     val crits = Seq()
     val (resultTests, resultSkips, resultMax) = Tester.handleRanges(crits, 6)
@@ -310,7 +275,7 @@ class TesterFunSuite extends FunSuite with ShouldMatchers {
   }
 
   test("sortArgLists - One toggle") {
-    val inToggle = TestCriteriaToggleFlag(SkipExternalTests)
+    val inToggle = TestCriteriaToggleFlag(StackTrace)
     val bundle = Tester.generateCriteriaBundle(Seq(inToggle))
     bundle.values should equal (Seq())
     bundle.ranges should equal (Seq())
@@ -326,8 +291,8 @@ class TesterFunSuite extends FunSuite with ShouldMatchers {
     val inRange2 = TestRunningnessRange(2, 4, SkipTest)
     val inRange3 = TestRunningnessRange(10, 13, RunTest)
 
-    val inToggle1 = TestCriteriaToggleFlag(SkipExternalTests)
-    val inToggle2 = TestCriteriaToggleFlag(SkipExternalTests)
+    val inToggle1 = TestCriteriaToggleFlag(StackTrace)
+    val inToggle2 = TestCriteriaToggleFlag(StackTrace)
 
     val bundle = Tester.generateCriteriaBundle(Seq(inValue1, inToggle1, inRange3, inRange1, inToggle2, inRange2, inValue2))
 

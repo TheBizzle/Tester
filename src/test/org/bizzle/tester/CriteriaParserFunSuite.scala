@@ -80,16 +80,8 @@ class CriteriaParserFunSuite extends FunSuite with ShouldMatchers {
     otherFlagShouldPass("StackTrace", TestCriteriaToggleFlag(StackTrace))
   }
 
-  test("otherFlag - RunBaseTests") {
-    otherFlagShouldPass("RunBaseTests", TestCriteriaToggleFlag(RunBaseTests))
-  }
-
   test("otherFlag - Talkative") {
     otherFlagShouldPass("Talkative", TestCriteriaToggleFlag(Talkative))
-  }
-
-  test("otherFlag - SkipExternalTests") {
-    otherFlagShouldPass("SkipExternalTests", TestCriteriaToggleFlag(SkipExternalTests))
   }
 
   test("otherFlag - StackTrace (all lower)") {
@@ -137,27 +129,27 @@ class CriteriaParserFunSuite extends FunSuite with ShouldMatchers {
   }
 
   test("criteria - One toggle") {
-    criteriaShouldPass("RunBaseTests")
+    criteriaShouldPass("StackTrace")
   }
 
   test("criteria - Many toggles") {
-    criteriaShouldPass("RunBaseTests", "Talkative", "SkipExternalTests", "StackTrace")
+    criteriaShouldPass("Talkative", "StackTrace")
   }
 
   test("criteria - Mixed #1") {
-    criteriaShouldPass("RunBaseTests", "13", "24->50", "StackTrace", "~28", "~40->47", "2")
+    criteriaShouldPass("13", "24->50", "StackTrace", "~28", "~40->47", "2")
   }
 
   test("criteria - Mixed #1 (with not-ranges)") {
-    criteriaShouldPass("RunBaseTests", "13", "24->50", "StackTrace", "~28", "40>!>47", "2")
+    criteriaShouldPass("13", "24->50", "StackTrace", "~28", "40>!>47", "2")
   }
 
   test("criteria - Mixed #2") {
-    criteriaShouldPass("15", "17", "19", "~43", "30->300", "StackTrace", "SkipExternalTests", "~200->250", "~100->150", "~45->75")
+    criteriaShouldPass("15", "17", "19", "~43", "30->300", "StackTrace", "~200->250", "~100->150", "~45->75")
   }
 
   test("criteria - Mixed #2 (with not-ranges)") {
-    criteriaShouldPass("15", "17", "19", "~43", "30->300", "StackTrace", "SkipExternalTests", "200>!>250", "100>!>150", "45>!>75")
+    criteriaShouldPass("15", "17", "19", "~43", "30->300", "StackTrace", "200>!>250", "100>!>150", "45>!>75")
   }
 
   test("criteria - Mixed #3") {

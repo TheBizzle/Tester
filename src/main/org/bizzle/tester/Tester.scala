@@ -17,57 +17,29 @@ import
  * Time: 8:27 PM
  */
 
-// This file, too, is a giant piece of shit. --Jason
-
 object Tester {
 
-  //@ Annoying compiler bug....  Fix this rubbish when the compiler gets fixed!
-  def apply[T <: Testable, Subject <: TestSubject, Status <: ExecutionStatus, AnalysisFlags <: TestAnalysisFlagBundle, ResultFlags <: TestAnalysisResultBundle,
-            TFConsBundle <: TestFuncConstructionBundle, TFunc <: TestFunction[T, Subject, Status, AnalysisFlags, ResultFlags], TCluster <: TestCluster[TFunc, Subject, TFConsBundle]]
-           (args:      Seq[TestCriteria],
-            testable:  T = null,
-            cluster:   TCluster with TestCluster[TFunc with TestFunction[T, Subject, Status, AnalysisFlags, ResultFlags], Subject, TFConsBundle] = null,
-            baseTests: Seq[Suite] = Seq[Suite]()) {
-    val bundle = generateCriteriaBundle(args)
-    makeTestRunningDecisions(bundle, testable, cluster, baseTests)
+  def apply[T <: Testable, TFunc <: TestFunction[T, _, _, _, _]](args: Seq[TestCriteria], testable: T, getTestFuncs: (Seq[Int]) => Seq[TFunc], maxTestNumber: Int) {
+
+    val bundle  = generateCriteriaBundle(args)
+    val toggles = new TestToggleFlagManager(bundle.toggles.toSet)
+    val active  = toggles.contains _
+
+    val (isTalkative, isStackTracing) = (active(Talkative), active(StackTrace))
+
+    val values = bundle.values sortBy (_.getKey)
+    val ranges = bundle.ranges sortBy (_.getKey)
+
+    val testToggles    = Seq(isTalkative) zip Seq[TestToggleFlag](Talkative) collect { case (true, x) => x } toSet
+    val testFlagBundle = new TestFuncFlagBundle(testToggles)
+    val testsToRun     = handleTestIntervals(values, ranges, maxTestNumber)
+
+    runTests(getTestFuncs(testsToRun), testable, testFlagBundle, isStackTracing)
+
   }
 
-  private def makeTestRunningDecisions[T <: Testable, Subject <: TestSubject, Status <: ExecutionStatus, AnalysisFlags <: TestAnalysisFlagBundle,
-                                       ResultFlags <: TestAnalysisResultBundle, TFConsBundle <: TestFuncConstructionBundle,
-                                       TFunc <: TestFunction[T, Subject, Status, AnalysisFlags, ResultFlags], TCluster <: TestCluster[TFunc, Subject, TFConsBundle]]
-                                       (bundle: CriteriaBundle,
-                                        testable: T,
-                                        cluster: TCluster with TestCluster[TFunc with TestFunction[T, Subject, Status, AnalysisFlags, ResultFlags], Subject, TFConsBundle],
-                                        baseTests: Seq[Suite]) {
-
-    val toggles             = new TestToggleFlagManager(bundle.toggles.toSet)
-    val wantsToRunExternals = assessExternalityDesire(bundle)
-    val (isTalkative, isRunningBaseTests, isSkippingExternalTests, isStacktracing) =
-      (toggles.contains(Talkative), toggles.contains(RunBaseTests), toggles.contains(SkipExternalTests), toggles.contains(StackTrace))
-
-    if (isSkippingExternalTests && wantsToRunExternals)
-      throw new ContradictoryArgsException("If you want skip the external tests, you should not specify external tests to run.")
-
-    if (!wantsToRunExternals && !isRunningBaseTests)
-      throw new NotRunningTestsException("You can't run the test suite if you're going to skip the external tests AND the base tests")
-
-    if (!isSkippingExternalTests && wantsToRunExternals) {
-
-      val values = bundle.values sortBy (_.getKey)
-      val ranges = bundle.ranges sortBy (_.getKey)
-
-      val testToggles    = Seq(isTalkative) zip Seq[TestToggleFlag](Talkative) collect { case (true, x) => x } toSet
-      val testFlagBundle = new TestFuncFlagBundle(testToggles)
-      val testsToRun     = handleTestIntervals(values, ranges, cluster.size)
-
-      //@ Passing around this cluster is nasty.  Passing its size above seems largely useless, too.  Maybe just pass in a function that converts `Seq[Int] => Seq[TestFunction]`?
-      runTests(cluster.getTestsToRun(testsToRun), testable, testFlagBundle, isStacktracing)
-
-    }
-
-    if (isRunningBaseTests)
-      runBaseTests(baseTests)
-
+  def runSuites(suites: Suite*) {
+    suites foreach { x => print("\n"); x.execute(stats = true) }
   }
 
   private def runTests[T <: Testable, TFunc <: TestFunction[T, _, _, _, _]](tests: Seq[TFunc], testable: T, flags: TestFuncFlagBundle, isStacktracing: Boolean) {
@@ -119,7 +91,7 @@ object Tester {
     val overallMax = if (maxValueVal > maxRangeVal) maxValueVal else maxRangeVal
 
     if (overallMax < 1)
-      throw new NotRunningTestsException("All runnable tests were excluded!  Use the SkipExternalTests flag, instead!")
+      throw new NotRunningTestsException("All runnable tests were excluded!  What's the point...?")
 
     val resultArr = generateResultArray(testRanges, testValues, skipRanges, skipValues, overallMax)
     val out = resultArr.zipWithIndex collect { case (true, x) => x } toSeq
@@ -127,7 +99,7 @@ object Tester {
     if (!out.isEmpty)
       out
     else
-      throw new NotRunningTestsException("All runnable tests were excluded!  Use the SkipExternalTests flag, instead!")
+      throw new NotRunningTestsException("All runnable tests were excluded!  What's the point...?")
 
   }
 
@@ -138,11 +110,15 @@ object Tester {
 
       val (tests, skips) = ranges.partition(isIncludingTest)
 
-      val (testsHaveOverlap, firstTest, secondTest) = containsOverlaps(tests)
-      if (testsHaveOverlap) throw new RedundancyException(s"Test list has an overlap between ${firstTest.get.toString} and ${secondTest.get.toString}")
+      {
+        val (testsHaveOverlap, firstTest, secondTest) = containsOverlaps(tests)
+        if (testsHaveOverlap) throw new RedundancyException(s"Test list has an overlap between ${firstTest.get.toString} and ${secondTest.get.toString}")
+      }
 
-      val (skipsHaveOverlap, firstSkip, secondSkip) = containsOverlaps(skips)
-      if (skipsHaveOverlap) throw new RedundancyException(s"Skip list has an overlap between ${firstSkip.get.toString} and ${secondSkip.get.toString}")
+      {
+        val (skipsHaveOverlap, firstSkip, secondSkip) = containsOverlaps(skips)
+        if (skipsHaveOverlap) throw new RedundancyException(s"Skip list has an overlap between ${firstSkip.get.toString} and ${secondSkip.get.toString}")
+      }
 
       val maxOfRanges = {
         if (!tests.isEmpty) {
@@ -183,19 +159,12 @@ object Tester {
 
   }
 
-  private def runBaseTests(baseTests: Seq[Suite]) {
-    baseTests foreach { x => print("\n"); x.execute(stats = true) }
-  }
-
-  private[tester] def assessExternalityDesire(bundle: CriteriaBundle) : Boolean =
-    (bundle.values exists isIncludingTest) || (bundle.ranges exists isIncludingTest)
-
   private[tester] def generateCriteriaBundle(args: Seq[TestCriteria]) : CriteriaBundle =
     args.foldLeft(CriteriaBundle()) {
-      case (acc, x) => x match {
-        case y: TestCriteriaToggleFlag => acc.copy(toggles = y +: acc.toggles)
-        case y: TestRunningnessValue   => acc.copy(values  = y +: acc.values)
-        case y: TestRunningnessRange   => acc.copy(ranges  = y +: acc.ranges)
+      case (bundle, x) => x match {
+        case y: TestCriteriaToggleFlag => bundle.copy(toggles = y +: bundle.toggles)
+        case y: TestRunningnessValue   => bundle.copy(values  = y +: bundle.values)
+        case y: TestRunningnessRange   => bundle.copy(ranges  = y +: bundle.ranges)
       }
     }
 
@@ -212,6 +181,7 @@ object Tester {
     }
   }
 
-  private def isIncludingTest(tuple: TestRunningnessCriteria[_, _]) = tuple.flag == RunTest
+  private def isIncludingTest(tuple: TestRunningnessCriteria[_, _]) =
+    tuple.flag == RunTest
 
 }

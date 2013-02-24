@@ -48,16 +48,8 @@ class CriteriaDialectFunSuite extends FunSuite with ShouldMatchers {
     testFlag(StackTrace, TestCriteriaToggleFlag(StackTrace))
   }
 
-  test("Flag - RunBaseTests") {
-    testFlag(RunBaseTests, TestCriteriaToggleFlag(RunBaseTests))
-  }
-
   test("Flag - Talkative") {
     testFlag(Talkative, TestCriteriaToggleFlag(Talkative))
-  }
-
-  test("Flag - SkipExternalTests") {
-    testFlag(SkipExternalTests, TestCriteriaToggleFlag(SkipExternalTests))
   }
 
   test("Criteria - One value") {
@@ -99,58 +91,52 @@ class CriteriaDialectFunSuite extends FunSuite with ShouldMatchers {
   }
 
   test("Criteria - One toggle") {
-    val crit = (None, None, RunBaseTests)
+    val crit = (None, None, StackTrace)
     testCriteria(crit._3 ^^, crit)
   }
 
   test("Criteria - Many toggles") {
-    val crit1 = (None, None, RunBaseTests)
-    val crit2 = (None, None, Talkative)
-    val crit3 = (None, None, SkipExternalTests)
-    val crit4 = (None, None, StackTrace)
-    testCriteria(crit1._3 && crit2._3 && crit3._3 && crit4._3, crit1, crit2, crit3, crit4)
+    val crit1 = (None, None, Talkative)
+    val crit2 = (None, None, StackTrace)
+    testCriteria(crit1._3 && crit2._3, crit1, crit2)
   }
 
   test("Criteria - Mixed #1") {
-    val crit1 = (None,     None,     RunBaseTests)
+    val crit1 = (Some(2),  None,     RunTest)
     val crit2 = (Some(13), None,     RunTest)
     val crit3 = (Some(24), Some(50), RunTest)
     val crit4 = (None,     None,     StackTrace)
     val crit5 = (Some(28), None,     SkipTest)
     val crit6 = (Some(40), Some(47), SkipTest)
-    val crit7 = (Some(2),  None,     RunTest)
-    testCriteria(crit1._3 &&
+    testCriteria(crit1._1.get &&
                  crit2._1.get &&
                  crit3._1.get >&> crit3._2.get &&
                  crit4._3 &&
                 !crit5._1.get &&
-                 crit6._1.get >!> crit6._2.get &&
-                 crit7._1.get,
-                 crit1, crit2, crit3, crit4, crit5, crit6, crit7)
+                 crit6._1.get >!> crit6._2.get,
+                 crit1, crit2, crit3, crit4, crit5, crit6)
   }
 
   test("Criteria - Mixed #2") {
-    val crit1  = (Some(15),  None,      RunTest)
-    val crit2  = (Some(17),  None,      RunTest)
-    val crit3  = (Some(19),  None,      RunTest)
-    val crit4  = (Some(43),  None,      SkipTest)
-    val crit5  = (Some(30),  Some(300), RunTest)
-    val crit6  = (None,      None,      StackTrace)
-    val crit7  = (None,      None,      SkipExternalTests)
-    val crit8  = (Some(200), Some(250), SkipTest)
-    val crit9  = (Some(100), Some(150), SkipTest)
-    val crit10 = (Some(45),  Some(75),  SkipTest)
+    val crit1 = (Some(15),  None,      RunTest)
+    val crit2 = (Some(17),  None,      RunTest)
+    val crit3 = (Some(19),  None,      RunTest)
+    val crit4 = (Some(43),  None,      SkipTest)
+    val crit5 = (Some(30),  Some(300), RunTest)
+    val crit6 = (None,      None,      StackTrace)
+    val crit7 = (Some(45),  Some(75),  SkipTest)
+    val crit8 = (Some(200), Some(250), SkipTest)
+    val crit9 = (Some(100), Some(150), SkipTest)
     testCriteria(crit1._1.get &&
                  crit2._1.get &&
                  crit3._1.get &&
                 !crit4._1.get &&
                  crit5._1.get >&> crit5._2.get &&
                  crit6._3 &&
-                 crit7._3 &&
+                 crit7._1.get >!> crit7._2.get &&
                  crit8._1.get >!> crit8._2.get &&
-                 crit9._1.get >!> crit9._2.get &&
-                 crit10._1.get >!> crit10._2.get,
-                 crit1, crit2, crit3, crit4, crit5, crit6, crit7, crit8, crit9, crit10)
+                 crit9._1.get >!> crit9._2.get,
+                 crit1, crit2, crit3, crit4, crit5, crit6, crit7, crit8, crit9)
   }
 
   test("Criteria - Mixed #3") {
