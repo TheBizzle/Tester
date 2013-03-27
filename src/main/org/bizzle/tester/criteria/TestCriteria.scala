@@ -47,7 +47,7 @@ class TestRunningnessRange(testBounds: (Int, Int), testFlag: TestRunningnessFlag
   def intersects(that: TestRunningnessRange) : Boolean = {
     val thisRange = Range(guide._1, guide._2)
     val thatRange = Range(that.guide._1, that.guide._2)
-    thisRange.intersect(thatRange).size > 0  // There's certainly a better way to do this (true... but writing out the boolean gymnastics for it just isn't fun)
+    thisRange.intersect(thatRange).nonEmpty
   }
 
   def encapsulates(that: TestRunningnessRange) : Boolean = {
