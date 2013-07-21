@@ -38,11 +38,12 @@ object Tester {
 
   }
 
-  def runSuites(suites: Suite*) {
+  def runSuites(suites: Suite*) : Unit = {
     suites foreach { x => print("\n"); x.execute(stats = true) }
   }
 
-  private def runTests[T <: Testable, TFunc <: TestFunction[T, _, _, _, _]](tests: Seq[TFunc], testable: T, flags: TestFuncFlagBundle, isStacktracing: Boolean) {
+  private def runTests[T <: Testable, TFunc <: TestFunction[T, _, _, _, _]]
+                      (tests: Seq[TFunc], testable: T, flags: TestFuncFlagBundle, isStacktracing: Boolean) : Unit = {
 
     def successStr(testNumber: Int) = s"Test number $testNumber was a success."
     def failureStr(testNumber: Int) = s"Test number $testNumber failed miserably!"

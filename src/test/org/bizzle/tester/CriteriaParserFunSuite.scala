@@ -170,58 +170,58 @@ class CriteriaParserFunSuite extends FunSuite with ShouldMatchers {
 
   // ======================== UTILITIES - TEST FUNCTIONS ============================
 
-  private def testingnessValueShouldPass(arg: String) {
+  private def testingnessValueShouldPass(arg: String) : Unit = {
     val ValueTuple(not, value) = arg
     testShouldPass(testingnessValue, arg, TestRunningnessValue(value.toInt, not))
   }
 
-  private def testingnessValueShouldFail(arg: String) {
+  private def testingnessValueShouldFail(arg: String) : Unit = {
     testShouldFail(testingnessValue, arg)
   }
 
-  private def testingnessRangeShouldPass(arg: String) {
+  private def testingnessRangeShouldPass(arg: String) : Unit = {
     val RangeTuple(not, start, end) = arg
     testShouldPass(testingnessRange, arg, TestRunningnessRange(start.toInt, end.toInt, not))
   }
 
-  private def testingnessRangeShouldFail(arg: String) {
+  private def testingnessRangeShouldFail(arg: String) : Unit = {
     testShouldFail(testingnessRange, arg)
   }
 
-  private def testingnessNotRangeShouldPass(arg: String) {
+  private def testingnessNotRangeShouldPass(arg: String) : Unit = {
     val NotRangeTuple(start, end) = arg
     testShouldPass(testingnessNotRange, arg, TestRunningnessRange(start.toInt, end.toInt, SkipTest))
   }
 
-  private def testingnessNotRangeShouldFail(arg: String) {
+  private def testingnessNotRangeShouldFail(arg: String) : Unit = {
     testShouldFail(testingnessNotRange, arg)
   }
 
-  private def otherFlagShouldPass(arg: String, target: TestCriteriaToggleFlag) {
+  private def otherFlagShouldPass(arg: String, target: TestCriteriaToggleFlag) : Unit = {
     testShouldPass(otherFlag, arg, target)
   }
 
-  private def otherFlagShouldFail(arg: String) {
+  private def otherFlagShouldFail(arg: String) : Unit = {
     testShouldFail(otherFlag, arg)
   }
 
-  private def criteriaShouldPass(args: String*) {
+  private def criteriaShouldPass(args: String*) : Unit = {
     testShouldPass(crit, args.mkString(";"), args.toCriteria)
   }
 
-  private def criteriaShouldFail(args: String*) {
+  private def criteriaShouldFail(args: String*) : Unit = {
     testShouldFail(crit, args.mkString(";"))
   }
 
-  private def testShouldPass[T](parser: TestCriteriaParser.Parser[T], testStr: String, target: T) {
+  private def testShouldPass[T](parser: TestCriteriaParser.Parser[T], testStr: String, target: T) : Unit = {
     test(parser, testStr, ((x: ParseResult[_]) => x.get), target)
   }
 
-  private def testShouldFail(parser: TestCriteriaParser.Parser[_], testStr: String) {
+  private def testShouldFail(parser: TestCriteriaParser.Parser[_], testStr: String) : Unit = {
     test(parser, testStr, ((x: ParseResult[_]) => x.successful), false)
   }
 
-  private def test[T](parser: TestCriteriaParser.Parser[_], testStr: String, resultMorpher: (ParseResult[_]) => T, target: T) {
+  private def test[T](parser: TestCriteriaParser.Parser[_], testStr: String, resultMorpher: (ParseResult[_]) => T, target: T) : Unit = {
     resultMorpher(TestCriteriaParser.parseAll(parser, testStr)) should  equal (target)
   }
 

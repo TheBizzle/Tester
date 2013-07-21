@@ -177,19 +177,19 @@ class CriteriaDialectFunSuite extends FunSuite with ShouldMatchers {
 
   // ======================== UTILITIES - TEST FUNCTIONS ============================
 
-  private def testValue[T <% CombinatorPimper](subject: T, numAndFlag: (Int, TestRunningnessFlag)) {
+  private def testValue[T <% CombinatorPimper](subject: T, numAndFlag: (Int, TestRunningnessFlag)) : Unit = {
     test(subject.crit, TestRunningnessValue(numAndFlag._1, numAndFlag._2))
   }
 
-  private def testRange(subject: CombinatorPimper, numsAndFlag: (Int, Int, TestRunningnessFlag)) {
+  private def testRange(subject: CombinatorPimper, numsAndFlag: (Int, Int, TestRunningnessFlag)) : Unit = {
     test(subject.crit, TestRunningnessRange(numsAndFlag._1, numsAndFlag._2, numsAndFlag._3))
   }
   
-  private def testFlag[T <% TestCriteriaToggleFlag](subject: T, flag: TestCriteriaToggleFlag) {
+  private def testFlag[T <% TestCriteriaToggleFlag](subject: T, flag: TestCriteriaToggleFlag) : Unit = {
     test(subject, flag)
   }
 
-  private def testCriteria(subject: Seq[TestCriteria], target: (Option[Int], Option[Int], TestingFlag)*) {
+  private def testCriteria(subject: Seq[TestCriteria], target: (Option[Int], Option[Int], TestingFlag)*) : Unit = {
     require(subject.size == target.size)
     subject zip target foreach {
       case (s: TestCriteriaToggleFlag, (None, None, flag: TestToggleFlag))                  => testFlag(s, TestCriteriaToggleFlag(flag))
@@ -200,7 +200,7 @@ class CriteriaDialectFunSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  private def test(subject: TestCriteria, target: TestCriteria) {
+  private def test(subject: TestCriteria, target: TestCriteria) : Unit = {
     subject should equal (target)
   }
 
