@@ -1,10 +1,18 @@
-name := "PathFinding"
+name := "Tester"
+
+organization := "org.bizzle"
 
 version := "1.0"
 
 scalaVersion := "2.10.1"
 
-artifactName := { (_, _, _) => "Tester.jar" }
+licenses += ("BSD", url("http://choosealicense.com/licenses/bsd-3-clause/"))
+
+seq(bintrayPublishSettings: _*)
+
+bintray.Keys.repository in bintray.Keys.bintray := "Tester"
+
+bintray.Keys.bintrayOrganization in bintray.Keys.bintray := Some("thebizzle")
 
 scalaSource in Compile <<= baseDirectory(_ / "src" / "main")
 
